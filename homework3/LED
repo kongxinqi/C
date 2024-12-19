@@ -1,0 +1,20 @@
+// 定义LED引脚
+#define LED_PIN 13
+
+// 初始化函数
+void setup() {
+  // 设置LED引脚为输出模式
+  pinMode(LED_PIN, OUTPUT);
+}
+
+// 主循环函数
+void loop() {
+  // 打开LED
+  digitalWrite(LED_PIN, HIGH);
+  // 等待500毫秒
+  delay(500);
+  // 关闭LED
+  digitalWrite(LED_PIN, LOW);
+  // 再次等待500毫秒
+  delay(500);
+}
