@@ -1,0 +1,91 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_FRAMES 100
+#define MAX_OBJECTS 100
+#define WIDTH 20
+#define HEIGHT 10
+
+typedef struct {
+    char character;
+    int x, y;
+} AnimationObject;
+
+typedef struct {
+    AnimationObject objects[MAX_OBJECTS];
+    int object_count;
+} AnimationFrame;
+
+typedef struct {
+    AnimationFrame frames[MAX_FRAMES];
+    int frame_count;
+    int current_frame;
+} Animation;
+
+// 初始化动画
+void init_animation(Animation *anim) {
+    anim->frame_count = 0;
+    anim->current_frame = 0;
+}
+
+// 添加对象到帧
+void add_object_to_frame(AnimationFrame *frame, char ch, int x, int y) {
+    if (frame->object_count < MAX_OBJECTS) {
+        frame->objects[frame->object_count].character = ch;
+        frame->objects[frame->object_count].x = x;
+        frame->objects[frame->object_count].y = y;
+        frame->object_count++;
+    }
+}
+
+// 添加帧到动画
+void add_frame_to_animation(Animation *anim, AnimationFrame frame) {
+    if (anim->frame_count < MAX_FRAMES) {
+        anim->frames[anim->frame_count] = frame;
+        anim->frame_count++;
+    }
+}
+
+// 播放动画（在控制台中）
+void play_animation(Animation *anim) {
+    for (int i = 0; i < anim->frame_count; i++) {
+        anim->current_frame = i;
+        char canvas[HEIGHT][WIDTH + 1]; // +1 for null terminator
+        memset(canvas, ' ', sizeof(canvas)); // clear canvas with spaces
+
+        AnimationFrame *frame = &anim->frames[i];
+        for (int j = 0; j < frame->object_count; j++) {
+            AnimationObject *obj = &frame->objects[j];
+            canvas[obj->y][obj->x] = obj->character;
+        }
+
+        // Print the canvas
+        for (int row = 0; row < HEIGHT; row++) {
+            printf("%s\n", canvas[row]);
+        }
+        printf("\n"); // add a newline between frames for clarity
+
+        // Simulate animation delay (in real applications, use a timer)
+        for (volatile int delay = 100000000; delay > 0; delay--);
+    }
+}
+
+int main() {
+    Animation anim;
+    init_animation(&anim);
+
+    // Create some frames and add objects to them
+    AnimationFrame frame1, frame2;
+    frame1.object_count = 0;
+    frame2.object_count = 0;
+    add_object_to_frame(&frame1, 'A', 5, 5);
+    add_object_to_frame(&frame2, 'B', 10, 5);
+    add_frame_to_animation(&anim, frame1);
+    add_frame_to_animation(&anim, frame2);
+
+    // Play the animation
+    play_animation(&anim);
+
+    return 0;
+}
